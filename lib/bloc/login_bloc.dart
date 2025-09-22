@@ -30,21 +30,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         .loginApi(data)
         .then((onValue) {
           if (onValue.error.isNotEmpty) {
-            state.copyWith(
-              error: onValue.toString(),
-              postApiStatus: PostApiStatus.failure,
+            emit(
+              state.copyWith(
+                error: onValue.toString(),
+                postApiStatus: PostApiStatus.failure,
+              ),
             );
           } else {
-            state.copyWith(
-              error: "Login Successful",
-              postApiStatus: PostApiStatus.success,
+            emit(
+              state.copyWith(
+                error: "Login Successful",
+                postApiStatus: PostApiStatus.success,
+              ),
             );
           }
         })
         .onError((error, stackTrace) {
-          state.copyWith(
-            error: error.toString(),
-            postApiStatus: PostApiStatus.failure,
+          emit(
+            state.copyWith(
+              error: error.toString(),
+              postApiStatus: PostApiStatus.failure,
+            ),
           );
         });
   }

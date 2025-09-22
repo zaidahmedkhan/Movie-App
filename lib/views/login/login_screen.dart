@@ -91,6 +91,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 50),
                 BlocListener<LoginBloc, LoginState>(
+                  listenWhen: (current, previous) =>
+                      current.postApiStatus != previous.postApiStatus,
                   listener: (context, state) {
                     if (state.postApiStatus == PostApiStatus.failure) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -109,7 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   },
                   child: BlocBuilder<LoginBloc, LoginState>(
-                    buildWhen: (current, previous) => false,
+                    buildWhen: (current, previous) =>
+                        current.postApiStatus != previous.postApiStatus,
                     builder: (context, state) {
                       return ElevatedButton(
                         onPressed: () {
@@ -118,7 +121,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             context.read<LoginBloc>().add(LoginApi());
                           }
                         },
-                        child: Text('Login'),
+                        child: state.postApiStatus == PostApiStatus.loading
+                            ? CircularProgressIndicator()
+                            : Text('Login'),
                       );
                     },
                   ),
