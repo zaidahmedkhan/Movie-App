@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/login_bloc.dart';
+import 'package:movie_app/utils/enums.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -89,18 +90,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 const SizedBox(height: 50),
-                BlocBuilder<LoginBloc, LoginState>(
-                  buildWhen: (current, previous) => false,
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          debugPrint("I am here ");
-                        }
-                      },
-                      child: Text('Login'),
-                    );
+                BlocListener<LoginBloc, LoginState>(
+                  listener: (context, state) {
+                    if (state.postApiStatus == PostApiStatus.failure) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.error.toString())),
+                      );
+                    }
+                    if (state.postApiStatus == PostApiStatus.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Login successful")),
+                      );
+                    }
+                    if (state.postApiStatus == PostApiStatus.loading) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Submitting.......")),
+                      );
+                    }
                   },
+                  child: BlocBuilder<LoginBloc, LoginState>(
+                    buildWhen: (current, previous) => false,
+                    builder: (context, state) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            debugPrint("I am here ");
+                            context.read<LoginBloc>().add(LoginApi());
+                          }
+                        },
+                        child: Text('Login'),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

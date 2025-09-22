@@ -33,7 +33,11 @@ class NetworkServicesApi implements BaseApiServices {
 
     try {
       final response = await http
-          .post(Uri.parse(url), body: data)
+          .post(
+            Uri.parse(url),
+            body: data,
+            headers: {'x-api-key': 'reqres-free-v1'},
+          )
           .timeout(const Duration(seconds: 50));
 
       jsonResponse = returnResponse(response);
@@ -49,7 +53,7 @@ class NetworkServicesApi implements BaseApiServices {
   }
 
   dynamic returnResponse(http.Response response) {
-    switch (response) {
+    switch (response.statusCode) {
       case 200:
         dynamic jsonResponse = jsonDecode(response.body);
         return jsonResponse;
