@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/login_bloc.dart';
+import 'package:movie_app/config/routes/routes_names.dart';
 import 'package:movie_app/main.dart';
 import 'package:movie_app/utils/enums.dart';
 
@@ -101,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     }
                     if (state.postApiStatus == PostApiStatus.success) {
+                      Navigator.pushNamed(context, RoutesNames.homeScreen);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Login successful")),
                       );
